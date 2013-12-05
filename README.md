@@ -24,7 +24,7 @@ var config = configStore({...});
 // or      = configStore('./config.json');
 
 var port = config('PORT', 3000);
-var host = config('HOST);
+var host = config('HOST');
 ```
 
 Alternatively:
@@ -35,6 +35,7 @@ configStore({...}, function (err, config) {
   var port = config('PORT', 3000);
   var host = config('HOST);
 });
+```
 
 
 ## In the Browser
