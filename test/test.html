@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>configStore Test Page</title>
+  </head>
+  <body>
+    <script src="../configStore.js"></script>
+
+    <script>
+      (function () {
+        var config = configStore({test: 1, nested: {test: 2}});
+
+        console.group('From object:');
+        try {
+          console.log('`test`:', config('test', 2));
+          console.log('`nested`:', config('nestedTest', 1));
+          console.log('`missing` (default):', config('missing', 1));
+          console.log('`missing` (no default):', config('missing'));
+        } catch (e) {
+          console.log('Error:', e.message);
+        }
+        console.groupEnd();
+      })();
+    </script>
+
+    <script>
+      (function () {
+        configStore('./config.json', function (err, config) {
+          console.group('From file:');
+          try {
+            console.log('`test`:', config('test', 2));
+            console.log('`nested`:', config('nestedTest', 1));
+            console.log('`missing` (default):', config('missing', 1));
+            console.log('`missing` (no default):', config('missing'));
+          } catch (e) {
+            console.log('Error:', e.message);
+          }
+          console.groupEnd();
+        });
+      })();
+    </script>
+  </body>
+</html>

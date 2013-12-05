@@ -1,0 +1,33 @@
+{
+  "name": "config-store",
+  "version": "0.1.0",
+  "description": "A JavaScript config store",
+  "author": "Andrew Hayward",
+  "license": "MPLv2",
+
+  "main": "configStore.js",
+
+  "scripts": {
+    "test": "npm run lint && tap test/*.test.js",
+    "lint": "jshint configStore.js"
+  },
+
+  "dependencies": {
+    "optimist": "~0.6.0"
+  },
+  "devDependencies": {
+    "tap": "~0.4.4",
+    "jshint": "~2.3.0"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andrewhayward/js-config-store.git"
+  },
+
+  "bugs": {
+    "url": "https://github.com/andrewhayward/js-config-store/issues"
+  },
+
+  "homepage": "https://github.com/andrewhayward/js-config-store"
+}
