@@ -120,6 +120,7 @@
 
       if (Object.prototype.toString.call(config[key]) === '[object Object]') {
         var subconfig = parse(config[key]);
+        parsed[normalised] = config[key];
         Object.keys(subconfig).forEach(function(key) {
           parsed[normalised+'_'+key] = subconfig[key];
         });
