@@ -113,6 +113,7 @@
   }
 
   function parse (config) {
+    config = config || {};
     var parsed = {};
 
     Object.keys(config).forEach(function (key) {
