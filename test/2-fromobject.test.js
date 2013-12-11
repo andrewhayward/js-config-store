@@ -42,7 +42,7 @@ test('configStore finds keys correctly', function (t) {
     t.equal(c, 2, '`nestedTest` found, correct value returned');
 
     var d = config('nested', {});
-    t.deepEqual(d, {test: 2}, '`nested` found, correct value returned');
+    t.deepEqual(d, {TEST: 2}, '`nested` found, correct value returned');
   }
 
   var config = configStore(obj);

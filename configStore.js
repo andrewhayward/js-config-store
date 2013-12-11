@@ -121,13 +121,22 @@
 
       if (Object.prototype.toString.call(config[key]) === '[object Object]') {
         var subconfig = parse(config[key]);
-        parsed[normalised] = config[key];
         Object.keys(subconfig).forEach(function(key) {
           parsed[normalised+'_'+key] = subconfig[key];
         });
       } else {
         parsed[normalised] = config[key];
       } 
+    });
+
+    Object.keys(parsed).forEach(function (key) {
+      var match = key.match(/^([^_]+)_(.*)$/);
+      if (match) {
+        var keyStub = match[1];
+        var rest = match[2];
+        parsed[keyStub] = parsed[keyStub] || {};
+        parsed[keyStub][rest] = parsed[key];
+      }
     });
 
     return parsed;
