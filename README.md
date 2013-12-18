@@ -65,3 +65,32 @@ In the browser, it will read from a JSON configuration object (which may be read
   })();
 </script>
 ```
+
+## `find`
+
+Sometimes, you might want to pull in entire sets of data from config...
+
+```javascript
+{
+  "db": {
+    "host": "...",
+    "user": "...",
+    "password": "..."
+  }
+}
+```
+
+The standard `config` lookup doesn't handle this, as it maps this type of structure to `env`-style variables, so `config('db')` would not return anything.
+
+However, `config.find` is available for this type of situation, and lets you pull blocks of config out of the store. Unlike the standard lookup, it won't throw an error if the key is not found and you don't provide a fallback - the return value will just be `undefined`.
+
+```javascript
+var db = config.find('db');
+// {host: "...", user: "...", password: "..."}
+var user = config.find('db.user');
+// "..."
+var port = config.find('db.port');
+// undefined
+var port = config.find('db.port', 80);
+// 80
+```
