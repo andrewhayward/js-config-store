@@ -33,7 +33,7 @@ Alternatively:
 var configStore = require('config-store');
 configStore({...}, function (err, config) {
   var port = config('PORT', 3000);
-  var host = config('HOST);
+  var host = config('HOST');
 });
 ```
 
