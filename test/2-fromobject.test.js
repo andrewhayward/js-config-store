@@ -38,11 +38,23 @@ test('configStore finds keys correctly', function (t) {
 
     t.throws(config.bind(null, 'missing'), '`missing` not found, error thrown with no fallback value');
 
-    var c = config('nestedTest', 1);
-    t.equal(c, 2, '`nestedTest` found, correct value returned');
+    t.throws(config.bind(null, 'nested'), '`nested` not found, error thrown with no fallback value');
 
-    var d = config('nested', {});
-    t.deepEqual(d, {test: 2}, '`nested` found, correct value returned');
+    t.equal(config('NESTED_TEST'), 2, '\'var\' style works as expected');
+    t.equal(config('nestedTest'), 2, '\'camel case\' works as expected');
+    t.equal(config('nested.test'), 2, '\'dot notation\' works as expected');
+
+    var c = config.find('test');
+    t.equal(c, a, '`find` works as expected with simple look-ups');
+
+    var d = config.find('missing', 2);
+    t.equal(d, b, '`find` works as expected with fallback values');
+
+    var e = config.find('nested', {});
+    t.deepEqual(e, {test: 2}, '`nested` found, correct value returned');
+
+    var f = config.find('nested.test');
+    t.equal(f, 2, '`nested.test` found, correct value returned');
   }
 
   var config = configStore(obj);

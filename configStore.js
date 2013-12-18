@@ -1,9 +1,12 @@
+/* jshint -W069 */ // Ignore 'dot notation' errors
+
 (function () {
 
   var root = this,
       previousStore,
       argv = getArgv(),
-      env = getEnv();
+      env = getEnv(),
+      compiled;
 
   if (root !== null) {
     previousStore = root.configStore;
@@ -85,6 +88,31 @@
       throw new ReferenceError('Unable to find ' + param + ' configuration');
     }
 
+    store.find = function (param, defaultValue) {
+      if (typeof compiled === 'undefined') {
+        compiled = compile(argv, config, env);
+        console.log(compiled);
+      }
+
+      var parts = normalise(param).toLowerCase().split('_').reverse(),
+          data = compiled,
+          part;
+
+      while (parts.length) {
+        part = parts.pop();
+
+        if (typeof data[part] === 'undefined')
+          return defaultValue || undefined;
+
+        if (!parts.length)
+          return data[part];
+
+        data = data[part];
+      }
+
+      return data || defaultValue;
+    };
+
     return done(null, store);
   }
 
@@ -109,7 +137,7 @@
   }
 
   function normalise (value) {
-    return (''+value).replace(/([^A-Z_])([A-Z])/g, '$1_$2').toUpperCase();
+    return (''+value).replace(/[^a-z_]+/i, '_').replace(/([^A-Z_])([A-Z])/g, '$1_$2').toUpperCase();
   }
 
   function parse (config) {
@@ -121,7 +149,6 @@
 
       if (Object.prototype.toString.call(config[key]) === '[object Object]') {
         var subconfig = parse(config[key]);
-        parsed[normalised] = config[key];
         Object.keys(subconfig).forEach(function(key) {
           parsed[normalised+'_'+key] = subconfig[key];
         });
@@ -133,13 +160,47 @@
     return parsed;
   }
 
+  function compile () {
+    var configs = Array.prototype.slice.call(arguments);
+
+    return configs.reduce(function(compiled, config) {
+      return Object.keys(config).reduce(function(compiled, key) {
+        if (key.charAt(0) === '_') return compiled;
+
+        var parts = key.toLowerCase().split(/_+/),
+            last = parts.length - 1,
+            obj = compiled;
+
+        parts.forEach(function(part, index) {
+          var type = Object.prototype.toString.call(obj[part]);
+          if (!type.match(/^\[object (Undefined|Object|Array)\]$/))
+            return;
+
+          if (index === last) {
+            if (!obj.hasOwnProperty(part))
+              obj[part] = config[key];
+          } else {
+            if (!obj.hasOwnProperty(part))
+              obj[part] = {};
+            obj = obj[part];
+          }
+        });
+
+        return compiled;
+      }, compiled);
+    }, {});
+  }
+
   function getArgv () {
     try {
       if (!process || !process.argv || (typeof require !== 'function')) {
         return {};
       }
 
-      return parse(require('optimist').argv);
+      var argv = require('optimist').argv;
+      delete argv['_'];
+      delete argv['$0'];
+      return parse(argv);
     } catch (e) {
       return {};
     }
