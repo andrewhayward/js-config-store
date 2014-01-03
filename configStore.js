@@ -102,7 +102,7 @@
         part = parts.pop();
 
         if (typeof data[part] === 'undefined')
-          return defaultValue || undefined;
+          return defaultValue;
 
         if (!parts.length)
           return data[part];
